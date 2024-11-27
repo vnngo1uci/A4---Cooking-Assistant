@@ -1,1 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Recipe Finder</h1>
+    <form method="post">
+        <label for="ingredients">Enter Ingredients:</label>
+        <input type="text" id="ingredients" name="ingredients">
+        <button type="submit">Find Recipes</button>
+    </form>
+    <h2>Recipes:</h2>
+    <ul>
+        {% for recipe in recipes %}
+        <li>{{ recipe.name }} (Missing: {{ recipe.missing }})</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Back to Home</a>
+</body>
+</html>
 
