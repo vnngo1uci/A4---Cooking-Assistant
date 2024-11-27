@@ -1,0 +1,63 @@
+Cooking Assistant
+Cooking Assistant is a web-based application designed to make cooking easier and more enjoyable. Users can find recipes based on available ingredients, generate shopping lists, and plan their meals—all in a clean and modern interface.
+
+Features
+Basic Features
+
+Recipe Finder: Enter ingredients you have at home to get recipe suggestions.
+Shopping List Generator: Add missing ingredients directly to a shopping list.
+
+Meal Planner: Plan meals for the week with organized recipes.
+
+UI/UX Highlights
+Clean, responsive design for easy navigation on desktop and mobile devices.
+Dark and light themes can be added in future iterations.
+
+Setup and Installation
+Prerequisites
+Python 3.7 or later installed.
+Flask Python package:
+pip install flask
+
+File Structure
+cooking_assistant/
+├── app.py                  # Main Flask application
+├── templates/              # HTML templates for the app
+│   ├── index.html
+│   ├── recipe_finder.html
+│   ├── shopping_list.html
+│   └── meal_planner.html
+├── static/                 # Static assets (CSS, images, etc.)
+│   ├── styles.css          # Custom styles for the app
+└── README.md   # Documentation file
+
+
+Running the App
+Clone the repository or download the project files.
+
+Navigate to the project directory:
+cd cooking_assistant
+
+Run the application:
+python app.py
+Open your browser and go to http://127.0.0.1:5000 to access the application.
+
+How to Use
+
+Home Page
+Access the main features of the app via navigation links.
+
+Recipe Finder
+Enter a list of ingredients you have on hand.
+Get a list of recipe suggestions, including any missing ingredients.
+
+Shopping List
+View and manage a pre-generated shopping list for your recipes.
+
+Meal Planner
+Get a weekly meal plan with recipes organized by day.
+
+Technologies Used
+Backend: Flask (Python)
+Frontend: HTML5, CSS3
+Styling: Custom CSS with responsive design principle
