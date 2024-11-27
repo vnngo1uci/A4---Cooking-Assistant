@@ -1,18 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for
-
+from recipes import recipes  # Import the recipes dictionary from recipes.py
+import calendar
+from datetime import datetime
 app = Flask(__name__)
 
-# Dictionary to store recipes
-recipes = {
-    "Pasta Primavera": ["pasta", "bell peppers", "tomatoes", "cheese"],
-    "Chicken Curry": ["chicken", "curry powder", "onions", "coconut milk"],
-    "Vegetable Stir Fry": ["broccoli", "carrots", "soy sauce", "garlic"],
-    "Guacamole": ["avocado", "lime", "onions", "tomatoes"],
-    "Pasta Carbonara": ["pasta", "chicken", "cheese"],
-}
-
-# Selected recipes and their missing ingredients
+# Selected recipes and their ingredients
 selected_recipes = []
+
+meal_plan = {}
 
 # Home Route
 @app.route('/')
@@ -54,15 +49,62 @@ def save_recipe():
 
 
 # Shopping List Route
-@app.route('/shopping_list')
+@app.route('/shopping_list', methods=['GET', 'POST'])
 def shopping_list():
-    # Consolidate ingredients from all selected recipes
-    shopping_list = []
-    for recipe in selected_recipes:
-        shopping_list.extend(recipe["ingredients"])
-    shopping_list = list(set(shopping_list))  # Remove duplicates
-    return render_template('shopping_list.html', shopping_list=shopping_list)
+    if request.method == 'POST':
+        checked_items = request.form.getlist('checked_items')
+        # Filter out checked items from the shopping list
+        for recipe in selected_recipes:
+            recipe["ingredients"] = [
+                ingredient for ingredient in recipe["ingredients"] if ingredient not in checked_items
+            ]
+    return render_template('shopping_list.html', selected_recipes=selected_recipes)
 
+
+# Clear Shopping List Route
+@app.route('/clear_shopping_list', methods=['POST'])
+def clear_shopping_list():
+    global selected_recipes
+    selected_recipes.clear()  # Clear all selected recipes
+    return redirect(url_for('shopping_list'))  # Redirect to the shopping list page
+
+# Meal Planner Route
+@app.route('/meal_planner', methods=['GET', 'POST'])
+def meal_planner():
+    global meal_plan
+
+    # Get current month and year
+    now = datetime.now()
+    current_year = now.year
+    current_month = now.month
+
+    # Initialize the meal plan for the current month if not already initialized
+    if current_month not in meal_plan:
+        meal_plan[current_month] = {}
+
+    # Process form submission for assigning meals
+    if request.method == 'POST':
+        day = int(request.form.get('day'))
+        recipe = request.form.get('recipe')
+
+        # Assign the selected recipe to the specified day
+        if day in meal_plan[current_month]:
+            meal_plan[current_month][day].append(recipe)
+        else:
+            meal_plan[current_month][day] = [recipe]
+
+    # Generate the calendar for the current month
+    cal = calendar.Calendar()
+    month_days = cal.monthdayscalendar(current_year, current_month)
+
+    return render_template(
+        'meal_planner.html',
+        month_days=month_days,
+        current_month=current_month,
+        current_year=current_year,
+        recipes=list(recipes.keys()),
+        meal_plan=meal_plan[current_month]
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)
