@@ -7,13 +7,29 @@
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>Shopping List</h1>
-    <ul>
-        {% for item in shopping_list %}
-        <li>{{ item }}</li>
-        {% endfor %}
-    </ul>
-    <a href="/">Back to Home</a>
+    <header>
+        Shopping List
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/recipe_finder">Recipe Finder</a></li>
+        </ul>
+    </nav>
+    <main>
+        <h1>Your Shopping List</h1>
+        <ul>
+            {% for item in shopping_list %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+        {% if shopping_list == [] %}
+        <p>No recipes selected yet. Go to the <a href="/recipe_finder">Recipe Finder</a> to add some!</p>
+        {% endif %}
+    </main>
+    <footer>
+        <p>&copy; 2024 Cooking Assistant</p>
+    </footer>
 </body>
 </html>
 
