@@ -18,17 +18,35 @@
     </nav>
     <main>
         <h1>Your Shopping List</h1>
-        <ul>
-            {% for item in shopping_list %}
-            <li>{{ item }}</li>
+        <form method="post">
+            {% if selected_recipes %}
+            {% for recipe in selected_recipes %}
+            <h2>{{ recipe.name }}</h2>
+            <ul>
+                {% for ingredient in recipe.ingredients %}
+                <li>
+                    <label>
+                        <input type="checkbox" name="checked_items" value="{{ ingredient }}">
+                        {{ ingredient }}
+                    </label>
+                </li>
+                {% endfor %}
+            </ul>
             {% endfor %}
-        </ul>
-        {% if shopping_list == [] %}
-        <p>No recipes selected yet. Go to the <a href="/recipe_finder">Recipe Finder</a> to add some!</p>
+            <button type="submit">Update Shopping List</button>
+            {% else %}
+            <p>No recipes selected yet. Go to the <a href="/recipe_finder">Recipe Finder</a> to add some!</p>
+            {% endif %}
+        </form>
+
+        {% if selected_recipes %}
+        <form method="post" action="/clear_shopping_list">
+            <button type="submit" style="margin-top: 20px; background-color: red; color: white;">Clear Shopping List</button>
+        </form>
         {% endif %}
     </main>
     <footer>
-        <p>&copy; 2024 Cooking Assistant</p>
+        <p>by Vincent Ngo and Emmanuel Batista</p>
     </footer>
 </body>
 </html>
