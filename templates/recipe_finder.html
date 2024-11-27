@@ -29,6 +29,9 @@
         <ul>
             {% for result in results %}
             <li>
+                {% if result.vegan %}
+                <span style="color: green; font-size: 1.2rem;">●</span>
+                {% endif %}
                 <strong>{{ result.name }}</strong><br>
                 Matching Ingredients: {{ result.matching | join(', ') }}<br>
                 Missing Ingredients: {{ result.missing | join(', ') }}<br>
@@ -44,7 +47,7 @@
         {% endif %}
     </main>
     <footer>
-        <p>&copy; 2024 Cooking Assistant</p>
+        <p>by Vincent Ngo and Emmanuel Batista</p>
     </footer>
 </body>
 </html>
