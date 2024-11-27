@@ -5,15 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meal Planner</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        td {
+            height: 100px;
+            vertical-align: top;
+        }
+
+        .form-container {
+            margin-top: 10px;
+        }
+
+        .assigned-meals {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1>Meal Planner</h1>
-    <ul>
-        {% for day, meals in meal_plan.items() %}
-        <li><strong>{{ day }}:</strong> {{ meals | join(', ') }}</li>
-        {% endfor %}
-    </ul>
-    <a href="/">Back to Home</a>
+    <header>
+        Meal Planner
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/recipe_finder">Recipe Finder</a></li>
+            <li><a href="/shopping_list">Shopping List</a></li>
+        </ul>
+    </nav>
+    <main>
+        <h1>Meal Planner for {{ current_month }}/{{ current_year }}</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for week in month_days %}
+                <tr>
+                    {% for day in week %}
+                    <td>
+                        {% if day > 0 %}
+                        <strong>{{ day }}</strong>
+                        <div class="form-container">
+                            <form method="post" style="display: inline;">
+                                <input type="hidden" name="day" value="{{ day }}">
+                                <select name="recipe">
+                                    {% for recipe in recipes %}
+                                    <option value="{{ recipe }}">{{ recipe }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit">Assign</button>
+                            </form>
+                        </div>
+                        <div class="assigned-meals">
+                            {% if day in meal_plan %}
+                            <strong>Meals:</strong>
+                            <ul>
+                                {% for meal in meal_plan[day] %}
+                                <li>{{ meal }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <p>&copy; 2024 Cooking Assistant</p>
+    </footer>
 </body>
 </html>
 
