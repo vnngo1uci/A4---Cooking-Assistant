@@ -22,6 +22,7 @@ pip install flask
 File Structure
 cooking_assistant/
 ├── app.py                  # Main Flask application
+├── recipes.py              # Recipe Data
 ├── templates/              # HTML templates for the app
 │   ├── index.html
 │   ├── recipe_finder.html
