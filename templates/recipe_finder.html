@@ -7,19 +7,44 @@
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>Recipe Finder</h1>
-    <form method="post">
-        <label for="ingredients">Enter Ingredients:</label>
-        <input type="text" id="ingredients" name="ingredients">
-        <button type="submit">Find Recipes</button>
-    </form>
-    <h2>Recipes:</h2>
-    <ul>
-        {% for recipe in recipes %}
-        <li>{{ recipe.name }} (Missing: {{ recipe.missing }})</li>
-        {% endfor %}
-    </ul>
-    <a href="/">Back to Home</a>
+    <header>
+        Recipe Finder
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/shopping_list">Shopping List</a></li>
+        </ul>
+    </nav>
+    <main>
+        <h1>Find Recipes</h1>
+        <form method="post">
+            <label for="ingredients">Enter Ingredients (comma-separated):</label>
+            <input type="text" id="ingredients" name="ingredients" placeholder="e.g., tomatoes, cheese">
+            <button type="submit">Find Recipes</button>
+        </form>
+
+        <h2>Recipe Suggestions:</h2>
+        {% if results %}
+        <ul>
+            {% for result in results %}
+            <li>
+                <strong>{{ result.name }}</strong><br>
+                Matching Ingredients: {{ result.matching | join(', ') }}<br>
+                Missing Ingredients: {{ result.missing | join(', ') }}<br>
+                <form method="post" action="/save_recipe">
+                    <input type="hidden" name="recipe_name" value="{{ result.name }}">
+                    <button type="submit">Save Recipe</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No matching recipes found. Try adding more ingredients!</p>
+        {% endif %}
+    </main>
+    <footer>
+        <p>&copy; 2024 Cooking Assistant</p>
+    </footer>
 </body>
 </html>
-
