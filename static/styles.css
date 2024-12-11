@@ -23,7 +23,7 @@ nav ul {
     justify-content: center;
     background-color: #005bb5;
     overflow: hidden;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Ensure navigation adjusts for smaller screens */
 }
 
 nav ul li {
@@ -61,33 +61,38 @@ h1 {
     text-align: center;
 }
 
-/* Responsive Table for Calendar */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    border: 1px solid #ddd;
-    text-align: center;
-    padding: 10px;
-    font-size: 0.9rem;
-}
-
-th {
-    background-color: #f4f4f4;
-}
-
-td {
-    height: 100px;
-    vertical-align: top;
-}
-
+/* Shopping List Checkboxes */
 ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+
+ul li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+ul li:last-child {
+    border-bottom: none;
+}
+
+/* Corrected Checkbox Formatting */
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;  /* Add space between checkbox and label */
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+}
+
+label {
+    font-size: 1rem;
+    color: #333;
 }
 
 /* Buttons */
@@ -123,6 +128,29 @@ form input, form select {
     border-radius: 5px;
 }
 
+/* Responsive Table for Calendar */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.9rem;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+td {
+    height: 100px;
+    vertical-align: top;
+}
+
 /* Footer */
 footer {
     text-align: center;
@@ -139,7 +167,7 @@ footer {
     }
 
     nav ul {
-        flex-direction: column;
+        flex-direction: column; /* Stack navigation links on smaller screens */
     }
 
     main {
@@ -147,7 +175,7 @@ footer {
     }
 
     table th, table td {
-        font-size: 0.8rem;
+        font-size: 0.8rem; /* Smaller font for calendar */
     }
 }
 
@@ -163,11 +191,27 @@ footer {
 
     form input, form select {
         font-size: 0.9rem;
-        width: 100%;
+        width: 100%; /* Use full width for inputs on small screens */
     }
 
     button {
         font-size: 0.8rem;
         padding: 6px 12px;
     }
+}
+/* Clear Button Style */
+.clear-btn {
+    background-color: #e60000; /* Red button for clear */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.clear-btn:hover {
+    background-color: #b30000; /* Darker red on hover */
 }
