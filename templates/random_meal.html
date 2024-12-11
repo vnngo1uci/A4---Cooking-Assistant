@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Meal</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        Random Meal
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/recipe_finder">Recipe Finder</a></li>
+            <li><a href="/shopping_list">Shopping List</a></li>
+            <li><a href="/random_meal">Random Meal</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Your Random Meal</h1>
+
+        <div id="meal-container">
+            {% if meal %}
+            <h2 id="meal-name">{{ meal['name'] }}</h2>
+            <img id="meal-image" src="{{ meal['image'] }}" alt="{{ meal['name'] }}" style="width: 300px;">
+            <p><strong>Category:</strong> <span id="meal-category">{{ meal['category'] }}</span></p>
+            <p><strong>Area:</strong> <span id="meal-area">{{ meal['area'] }}</span></p>
+
+            <h3>Ingredients:</h3>
+            <ul id="meal-ingredients">
+                {% for ingredient in meal['ingredients'] %}
+                <li>{{ ingredient }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Instructions:</h3>
+            <p id="meal-instructions">{{ meal['instructions'] }}</p>
+            {% else %}
+            <p>No meal found. Try again later!</p>
+            {% endif %}
+        </div>
+
+        <button id="redraw-btn">Get Another Meal</button>
+    </main>
+
+    <footer>
+        <p>by Vincent Ngo and Emmanuel Batista</p>
+    </footer>
+
+    <script>
+        document.getElementById("redraw-btn").addEventListener("click", async () => {
+            try {
+                const response = await fetch('/random_meal_api');
+                const data = await response.json();
+
+                // Update Meal Details
+                document.getElementById("meal-name").textContent = data.name;
+                document.getElementById("meal-image").src = data.image;
+                document.getElementById("meal-category").textContent = data.category;
+                document.getElementById("meal-area").textContent = data.area;
+                document.getElementById("meal-instructions").textContent = data.instructions;
+
+                // Update Ingredients
+                const ingredientsContainer = document.getElementById("meal-ingredients");
+                ingredientsContainer.innerHTML = '';
+                data.ingredients.forEach(ingredient => {
+                    const li = document.createElement("li");
+                    li.textContent = ingredient;
+                    ingredientsContainer.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error("Error fetching new meal:", error);
+                alert("Failed to load a new meal. Please try again later.");
+            }
+        });
+    </script>
+</body>
+</html>
 
