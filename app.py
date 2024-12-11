@@ -1,16 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from recipes import recipes  # Import the recipes dictionary from recipes.py
+from recipes import recipes
 import calendar
 from datetime import datetime
 import requests
 app = Flask(__name__)
 
-# Selected recipes and their ingredients
-selected_recipes = []
-
-meal_plan = {}
-
 RANDOM_MEAL_URL = "https://www.themealdb.com/api/json/v1/1/random.php"
+
+selected_recipes = []
+meal_plan = {}
 
 # Home Route
 @app.route('/')
@@ -21,18 +19,18 @@ def home():
 @app.route('/recipe_finder', methods=['GET', 'POST'])
 def recipe_finder():
     results = []
-    if request.method == 'POST':
+    if request.method == 'POST': #check if a form was submitted
         user_ingredients = request.form.get('ingredients', '').lower().split(', ')
         filter_option = request.form.get('filter_option')
 
-        for recipe_name, details in recipes.items():
+        for recipe_name, details in recipes.items(): #algorithm for finding all recipes that hve the searched ingredient
             ingredients = details["ingredients"]
             vegan = details["vegan"]
             matching_ingredients = set(user_ingredients) & set(ingredients)
 
             if matching_ingredients:
-                missing_ingredients = set(ingredients) - matching_ingredients
-                if filter_option == "vegan" and not vegan:
+                missing_ingredients = set(ingredients) - matching_ingredients #hsow missing ingredients
+                if filter_option == "vegan" and not vegan: #Aply the vegan filter if selected by the user
                     continue
                 if filter_option == "non_vegan" and vegan:
                     continue
@@ -50,25 +48,31 @@ def recipe_finder():
 @app.route('/save_recipe', methods=['POST'])
 def save_recipe():
     recipe_name = request.form.get('recipe_name')
-    if recipe_name:
-        for recipe in recipes:
-            if recipe == recipe_name:
-                ingredients = recipes[recipe]
-                selected_recipes.append({
-                    "name": recipe,
-                    "ingredients": ingredients
-                })
+
+    if recipe_name and recipe_name in recipes:
+        # Extract ingredients correctly
+        ingredients = recipes[recipe_name]["ingredients"]
+
+        # Append the recipe with correct structure
+        selected_recipes.append({
+            "name": recipe_name,
+            "ingredients": ingredients
+        })
+    
+    # Redirect to shopping list after saving
     return redirect(url_for('shopping_list'))
 
+
+# IMPLEMENTATION OF API STARTS
 @app.route('/random_meal')
 def random_meal():
     response = requests.get(RANDOM_MEAL_URL)
     meal = None
 
-    if response.status_code == 200:
+    if response.status_code == 200: #checks if the API request was successful
         meal_data = response.json().get('meals', [])[0]
-        if meal_data:
-            meal = {
+        if meal_data: #filter meal data
+            meal = { #extracts all of the meal data and formats
                 'name': meal_data['strMeal'],
                 'category': meal_data['strCategory'],
                 'area': meal_data['strArea'],
@@ -84,10 +88,10 @@ def random_meal():
 
 @app.route('/random_meal_api')
 def random_meal_api():
-    response = requests.get(RANDOM_MEAL_URL)
+    response = requests.get(RANDOM_MEAL_URL) 
     meal_data = response.json().get('meals', [])[0]
 
-    meal = {
+    meal = { #store data
         'name': meal_data['strMeal'],
         'category': meal_data['strCategory'],
         'area': meal_data['strArea'],
@@ -100,19 +104,18 @@ def random_meal_api():
         ]
     }
     return jsonify(meal)
+# END OF API IMPLEMENTATION
 
-# Shopping List Route
+# SHOPPING LIST FEATURE
 @app.route('/shopping_list', methods=['GET', 'POST'])
 def shopping_list():
     if request.method == 'POST':
-        checked_items = request.form.getlist('checked_items')
-        # Filter out checked items from the shopping list
+        checked_items = request.form.getlist('checked_items') # Filter out checked items from the shopping list
         for recipe in selected_recipes:
             recipe["ingredients"] = [
                 ingredient for ingredient in recipe["ingredients"] if ingredient not in checked_items
             ]
     return render_template('shopping_list.html', selected_recipes=selected_recipes)
-
 
 # Clear Shopping List Route
 @app.route('/clear_shopping_list', methods=['POST'])
@@ -125,30 +128,23 @@ def clear_shopping_list():
 @app.route('/meal_planner', methods=['GET', 'POST'])
 def meal_planner():
     global meal_plan
-
-    # Get current month and year
     now = datetime.now()
-    current_year = now.year
+    current_year = now.year # Get current month and year
     current_month = now.month
 
-    # Initialize the meal plan for the current month if not already initialized
-    if current_month not in meal_plan:
+    if current_month not in meal_plan: # Initialize the meal plan for the current month if not already initialized
         meal_plan[current_month] = {}
-
-    # Process form submission for assigning meals
     if request.method == 'POST':
-        day = int(request.form.get('day'))
+        day = int(request.form.get('day')) # Process form submission for assigning meals
         recipe = request.form.get('recipe')
 
-        # Assign the selected recipe to the specified day
         if day in meal_plan[current_month]:
-            meal_plan[current_month][day].append(recipe)
+            meal_plan[current_month][day].append(recipe) # Assign the selected recipe to the specified day
         else:
             meal_plan[current_month][day] = [recipe]
 
-    # Generate the calendar for the current month
     cal = calendar.Calendar()
-    month_days = cal.monthdayscalendar(current_year, current_month)
+    month_days = cal.monthdayscalendar(current_year, current_month) # Generate the calendar for the current month
 
     return render_template(
         'meal_planner.html',
