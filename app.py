@@ -1,13 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from recipes import recipes  # Import the recipes dictionary from recipes.py
 import calendar
 from datetime import datetime
+import requests
 app = Flask(__name__)
 
 # Selected recipes and their ingredients
 selected_recipes = []
 
 meal_plan = {}
+
+RANDOM_MEAL_URL = "https://www.themealdb.com/api/json/v1/1/random.php"
 
 # Home Route
 @app.route('/')
@@ -57,6 +60,46 @@ def save_recipe():
                 })
     return redirect(url_for('shopping_list'))
 
+@app.route('/random_meal')
+def random_meal():
+    response = requests.get(RANDOM_MEAL_URL)
+    meal = None
+
+    if response.status_code == 200:
+        meal_data = response.json().get('meals', [])[0]
+        if meal_data:
+            meal = {
+                'name': meal_data['strMeal'],
+                'category': meal_data['strCategory'],
+                'area': meal_data['strArea'],
+                'instructions': meal_data['strInstructions'],
+                'image': meal_data['strMealThumb'],
+                'ingredients': [
+                    f"{meal_data[f'strIngredient{i}']} - {meal_data[f'strMeasure{i}']}"
+                    for i in range(1, 21)
+                    if meal_data[f'strIngredient{i}']
+                ]
+            }
+    return render_template('random_meal.html', meal=meal)
+
+@app.route('/random_meal_api')
+def random_meal_api():
+    response = requests.get(RANDOM_MEAL_URL)
+    meal_data = response.json().get('meals', [])[0]
+
+    meal = {
+        'name': meal_data['strMeal'],
+        'category': meal_data['strCategory'],
+        'area': meal_data['strArea'],
+        'instructions': meal_data['strInstructions'],
+        'image': meal_data['strMealThumb'],
+        'ingredients': [
+            f"{meal_data[f'strIngredient{i}']} - {meal_data[f'strMeasure{i}']}"
+            for i in range(1, 21)
+            if meal_data[f'strIngredient{i}']
+        ]
+    }
+    return jsonify(meal)
 
 # Shopping List Route
 @app.route('/shopping_list', methods=['GET', 'POST'])
