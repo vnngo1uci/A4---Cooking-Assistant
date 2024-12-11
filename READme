@@ -27,6 +27,7 @@ cooking_assistant/
 │   ├── index.html
 │   ├── recipe_finder.html
 │   ├── shopping_list.html
+│   ├── random_meal.html
 │   └── meal_planner.html
 ├── static/                 # Static assets (CSS, images, etc.)
 │   ├── styles.css          # Custom styles for the app
