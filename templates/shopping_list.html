@@ -5,6 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping List</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .shopping-list {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0073e6;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        ul li {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        form button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #005bb5;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -14,40 +64,47 @@
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/recipe_finder">Recipe Finder</a></li>
+            <li><a href="/random_meal">Random Meal</a></li>
         </ul>
     </nav>
-    <main>
+    <main class="shopping-list">
         <h1>Your Shopping List</h1>
-        <form method="post">
-            {% if selected_recipes %}
-            {% for recipe in selected_recipes %}
-            <h2>{{ recipe.name }}</h2>
+    
+        {% if selected_recipes %}
+        <form method="post" action="/shopping_list">
             <ul>
-                {% for ingredient in recipe.ingredients %}
+                {% for recipe in selected_recipes %}
                 <li>
-                    <label>
-                        <input type="checkbox" name="checked_items" value="{{ ingredient }}">
-                        {{ ingredient }}
-                    </label>
+                    <strong>{{ recipe["name"] }}</strong>
+                    <ul>
+                        {% for ingredient in recipe["ingredients"] %}
+                        <li class="checkbox-item">
+                            <label>
+                                <input type="checkbox" name="checked_items" value="{{ ingredient }}">
+                                {{ ingredient }}
+                            </label>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </li>
                 {% endfor %}
             </ul>
-            {% endfor %}
             <button type="submit">Update Shopping List</button>
-            {% else %}
-            <p>No recipes selected yet. Go to the <a href="/recipe_finder">Recipe Finder</a> to add some!</p>
-            {% endif %}
         </form>
-
-        {% if selected_recipes %}
-        <form method="post" action="/clear_shopping_list">
-            <button type="submit" style="margin-top: 20px; background-color: red; color: white;">Clear Shopping List</button>
+    
+        <!-- Add the Clear Shopping List Button -->
+        <form method="post" action="/clear_shopping_list" style="margin-top: 20px;">
+            <button type="submit" class="clear-btn">Clear Shopping List</button>
         </form>
+    
+        {% else %}
+        <p>Your shopping list is empty. Start adding recipes!</p>
         {% endif %}
     </main>
+    
+
     <footer>
         <p>by Vincent Ngo and Emmanuel Batista</p>
     </footer>
 </body>
 </html>
-
