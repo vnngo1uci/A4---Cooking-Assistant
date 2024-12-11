@@ -15,23 +15,33 @@ def home():
     return render_template('index.html')
 
 
-# Recipe Finder Route
 @app.route('/recipe_finder', methods=['GET', 'POST'])
 def recipe_finder():
     results = []
     if request.method == 'POST':
         user_ingredients = request.form.get('ingredients', '').lower().split(', ')
-        for recipe_name, ingredients in recipes.items():
+        filter_option = request.form.get('filter_option')
+
+        for recipe_name, details in recipes.items():
+            ingredients = details["ingredients"]
+            vegan = details["vegan"]
             matching_ingredients = set(user_ingredients) & set(ingredients)
+
             if matching_ingredients:
                 missing_ingredients = set(ingredients) - matching_ingredients
+                if filter_option == "vegan" and not vegan:
+                    continue
+                if filter_option == "non_vegan" and vegan:
+                    continue
+
                 results.append({
                     "name": recipe_name,
                     "matching": list(matching_ingredients),
                     "missing": list(missing_ingredients),
+                    "vegan": vegan,
                 })
-    return render_template('recipe_finder.html', results=results)
 
+    return render_template('recipe_finder.html', results=results)
 
 # Save Recipe Route
 @app.route('/save_recipe', methods=['POST'])
