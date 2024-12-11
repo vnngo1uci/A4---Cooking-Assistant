@@ -5,6 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Finder</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        .vegan-tag {
+            color: green;
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        header {
+            background-color: #0073e6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #005bb5;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: #004494;
+        }
+
+        main {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 800px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #0073e6;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        form label, form input, form button {
+            font-size: 1.1rem;
+        }
+
+        form input, form select {
+            padding: 10px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        form button {
+            background-color: #0073e6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #005bb5;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        ul li {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        ul li:last-child {
+            border-bottom: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #005bb5;
+            color: white;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -21,6 +133,14 @@
         <form method="post">
             <label for="ingredients">Enter Ingredients (comma-separated):</label>
             <input type="text" id="ingredients" name="ingredients" placeholder="e.g., tomatoes, cheese">
+
+            <label for="filter_option">Filter by:</label>
+            <select id="filter_option" name="filter_option">
+                <option value="">No Filter</option>
+                <option value="vegan">Vegan Only</option>
+                <option value="non_vegan">Non-Vegan Only</option>
+            </select>
+
             <button type="submit">Find Recipes</button>
         </form>
 
@@ -30,7 +150,7 @@
             {% for result in results %}
             <li>
                 {% if result.vegan %}
-                <span style="color: green; font-size: 1.2rem;">●</span>
+                <span class="vegan-tag">●</span>
                 {% endif %}
                 <strong>{{ result.name }}</strong><br>
                 Matching Ingredients: {{ result.matching | join(', ') }}<br>
